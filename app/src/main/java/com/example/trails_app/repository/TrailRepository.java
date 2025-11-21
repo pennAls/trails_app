@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface TrailRepository {
     void save(TrailEntity trail);
-    void findById(String id);
+    Integer findById(String id);
     List<TrailEntity> findAll();
     void deleteById(String id);
     List<PositionEntity> findPositionsByTrailId(String trailId);

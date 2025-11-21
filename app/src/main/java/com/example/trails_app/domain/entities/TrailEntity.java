@@ -1,14 +1,16 @@
 package com.example.trails_app.domain.entities;
 import java.time.LocalDateTime;
 import lombok.Value;
+import lombok.experimental.Accessors;
 
 @Value
+@Accessors(fluent = true)
 public class TrailEntity {
     String trailId;
     String name;
     LocalDateTime beginning;
-    LocalDateTime end;
-    double caloric_expenditure;
-    double average_speed;
-    double maximum_speed;
+    LocalDateTime ending;
+    double caloricExpenditure;
+    double averageSpeed;
+    double maximumSpeed;
 }
