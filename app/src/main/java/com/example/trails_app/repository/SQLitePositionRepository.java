@@ -17,40 +17,19 @@ public class SQLitePositionRepository implements PositionRepository {
     }
 
     @Override
-    public void save(PositionEntity position) {
+    public void save(PositionEntity position,String trailId) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("trailId", position.getTrailId());
+        values.put("trailId", trailId);
         values.put("latitude", position.getLatitude());
         values.put("longitude", position.getLongitude());
         values.put("instantaneousSpeed", position.getInstantaneousSpeed());
+        values.put("accuracy",position.getAccuracy());
         if (position.getTimestamp() != null) {
             values.put("timestamp", position.getTimestamp().toString());
         }
         db.insert("Positions", null, values);
         db.close();
 
-    }
-
-    @Override
-    public void saveAll(List<PositionEntity> positions) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.beginTransaction();
-        try {
-            for (PositionEntity position : positions) {
-                ContentValues values = new ContentValues();
-                values.put("trailId", position.getTrailId());
-                values.put("latitude", position.getLatitude());
-                values.put("longitude", position.getLongitude());
-                values.put("instantaneousSpeed", position.getInstantaneousSpeed());
-                if (position.getTimestamp() != null) {
-                    values.put("timestamp", position.getTimestamp().toString());
-                }
-                db.insert("Positions", null, values);
-            }
-            db.setTransactionSuccessful();
-        } finally {
-            db.endTransaction();
-        }
     }
 }

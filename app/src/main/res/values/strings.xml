@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Trails_APP</string>
     <string name="title_activity_maps">MapsActivity</string>
+
+    <string name="info_title">Informações da Trilha</string>
+    <string name="btn_start">Começar Trilha</string>
+    <string name="btn_end">Terminar Trilha</string>
 </resources>

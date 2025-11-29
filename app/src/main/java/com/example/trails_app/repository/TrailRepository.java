@@ -11,4 +11,5 @@ public interface TrailRepository {
     List<TrailEntity> findAll();
     void deleteById(String id);
     List<PositionEntity> findPositionsByTrailId(String trailId);
+    void updateTrail(TrailEntity finishedTrail);
 }

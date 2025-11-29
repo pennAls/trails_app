@@ -23,13 +23,14 @@ public class SQLiteTrailRepository implements TrailRepository {
     public void save(TrailEntity trail) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put("trailId",trail.trailId());
         values.put("name", trail.name());
         values.put("beginning", trail.beginning() != null ? trail.beginning().toString() : null);
         values.put("ending", trail.ending() != null ? trail.ending().toString() : null);
-        values.put("caloricExpenditure", trail.caloricExpenditure());
-        values.put("averageSpeed", trail.averageSpeed());
-        values.put("maximumSpeed", trail.maximumSpeed());
-        db.insert("Trails", null, values);
+        values.put("caloric_expenditure", trail.caloricExpenditure());
+        values.put("maximum_speed", trail.maximumSpeed());
+
+        long id = db.insert("Trails", null, values);
         db.close();
     }
 
@@ -117,7 +118,8 @@ public class SQLiteTrailRepository implements TrailRepository {
                     double speed = cursor.getDouble(cursor.getColumnIndexOrThrow("instantaneousSpeed"));
                     String timeStr = cursor.getString(cursor.getColumnIndexOrThrow("timestamp"));
                     LocalDateTime time = (timeStr != null) ? LocalDateTime.parse(timeStr) : null;
-                    list.add(new PositionEntity(posId, tId, lat, lng, time, speed));
+                    float accuracy = cursor.getFloat(cursor.getColumnIndexOrThrow("accuracy"));
+                    list.add(new PositionEntity(posId, tId, lat, lng, time, speed,accuracy));
 
                 } while (cursor.moveToNext());
             }
@@ -127,5 +129,20 @@ public class SQLiteTrailRepository implements TrailRepository {
 
         }
         return list;
+    }
+    @Override
+    public void updateTrail(TrailEntity trail) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put("name", trail.name());
+        values.put("beginning", trail.beginning() != null ? trail.beginning().toString() : null);
+        values.put("ending", trail.ending() != null ? trail.ending().toString() : null);
+        values.put("caloric_expenditure", trail.caloricExpenditure());
+        values.put("average_speed", trail.averageSpeed());
+        values.put("maximum_speed", trail.maximumSpeed());
+
+        db.update("Trails", values, "trailId = ?", new String[]{trail.trailId()});
+        db.close();
     }
 }

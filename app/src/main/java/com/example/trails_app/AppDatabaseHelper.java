@@ -16,7 +16,7 @@ public class AppDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE Trails ("
-                + "trailId INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "trailId TEXT PRIMARY KEY,"
                 + "name TEXT NOT NULL, "
                 + "beginning TEXT, "
                 + "ending TEXT, "
@@ -26,7 +26,7 @@ public class AppDatabaseHelper extends SQLiteOpenHelper {
                 + ")");
 
         db.execSQL("CREATE TABLE Positions ("
-                + "positionId INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "positionId TEXT PRIMARY KEY, "
                 + "trailId TEXT NOT NULL, "
                 + "latitude REAL, "
                 + "longitude REAL, "

@@ -12,4 +12,5 @@ public class PositionEntity {
     double longitude;
     LocalDateTime timestamp;
     double instantaneousSpeed;
+    float accuracy;
 }
