@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 
 public class AppDatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "trilha_db";
-    private static final int VERSION = 1;
+    private static final int VERSION = 3;
 
     public AppDatabaseHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, VERSION);
@@ -22,16 +22,19 @@ public class AppDatabaseHelper extends SQLiteOpenHelper {
                 + "ending TEXT, "
                 + "caloric_expenditure REAL, "
                 + "average_speed REAL, "
-                + "maximum_speed REAL"
+                + "maximum_speed REAL,"
+                + "distance REAL, "
+                + "duration TEXT"
                 + ")");
 
         db.execSQL("CREATE TABLE Positions ("
-                + "positionId TEXT PRIMARY KEY, "
+                + "positionId INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "trailId TEXT NOT NULL, "
                 + "latitude REAL, "
                 + "longitude REAL, "
                 + "instantaneousSpeed REAL, "
                 + "timestamp TEXT, "
+                + "accuracy REAL, "
                 + "FOREIGN KEY(trailId) REFERENCES Trails(trailId) ON DELETE CASCADE"
                 + ")");
     }

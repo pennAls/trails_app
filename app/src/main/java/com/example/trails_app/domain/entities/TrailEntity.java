@@ -13,4 +13,6 @@ public class TrailEntity {
     double caloricExpenditure;
     double averageSpeed;
     double maximumSpeed;
+    double distance;
+    String duration;
 }

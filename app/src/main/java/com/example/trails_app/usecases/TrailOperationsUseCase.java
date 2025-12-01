@@ -14,9 +14,15 @@ import java.util.UUID;
 
 public class TrailOperationsUseCase {
     private final TrailRepository trailRepository;
+
     public TrailOperationsUseCase(TrailRepository trailRepository) {
         this.trailRepository = trailRepository;
     }
+
+    public List<TrailEntity> getTrails() {
+        return trailRepository.findAll();
+    }
+
     public String startTrail() {
         String uuid = UUID.randomUUID().toString();
         TrailEntity trail = new TrailEntity(
@@ -26,11 +32,14 @@ public class TrailOperationsUseCase {
                 null,
                 0.0,
                 0.0,
-                0.0
+                0.0,
+                0.0,
+                null
         );
         trailRepository.save(trail);
         return uuid;
     }
+
     public TrailEntity finishTrail(String trailId) {
         List<PositionEntity> positions = trailRepository.findPositionsByTrailId(trailId);
 
@@ -66,7 +75,10 @@ public class TrailOperationsUseCase {
         LocalDateTime endTime = endPos.getTimestamp() != null ? endPos.getTimestamp() : LocalDateTime.now();
 
         long totalSeconds = Duration.between(startTime, endTime).getSeconds();
+        String formattedDuration = String.format("%02d:%02d:%02d", totalSeconds / 3600, (totalSeconds % 3600) / 60, totalSeconds % 60);
         double totalHours = totalSeconds / 3600.0;
+
+
         double totalDistanceKm = totalDistanceMeters / 1000.0;
 
         double averageSpeedKmh = (totalHours > 0) ? (totalDistanceKm / totalHours) : 0.0;
@@ -80,11 +92,22 @@ public class TrailOperationsUseCase {
                 endTime,
                 calories,
                 averageSpeedKmh,
-                maxSpeedKmh
+                maxSpeedKmh,
+                totalDistanceKm,
+                formattedDuration
         );
 
         trailRepository.updateTrail(finishedTrail);
 
         return finishedTrail;
     }
+
+    public void deleteTrail(String trailId) {
+        trailRepository.deleteById(trailId);
+    }
+
+    public void updateTrail(TrailEntity trilhaAtualizada) {
+        trailRepository.updateTrail(trilhaAtualizada);
+    }
+
 }

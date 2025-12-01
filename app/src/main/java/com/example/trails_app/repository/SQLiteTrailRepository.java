@@ -29,32 +29,12 @@ public class SQLiteTrailRepository implements TrailRepository {
         values.put("ending", trail.ending() != null ? trail.ending().toString() : null);
         values.put("caloric_expenditure", trail.caloricExpenditure());
         values.put("maximum_speed", trail.maximumSpeed());
+        values.put("distance", trail.distance());
+        values.put("duration", trail.duration());
 
         long id = db.insert("Trails", null, values);
         db.close();
     }
-
-    @Override
-    public Integer findById(String id) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(
-                "Trails",
-                new String[]{"trailId"},
-                "trailId = ?",
-                new String[]{id},
-                null, null, null
-        );
-        try {
-            if (cursor.moveToFirst()) {
-                return cursor.getInt(0);
-            } else {
-                return null;
-            }
-        } finally {
-            cursor.close();
-        }
-    }
-
     @Override
     public List<TrailEntity> findAll() {
         List<TrailEntity> list = new ArrayList<>();
@@ -64,13 +44,15 @@ public class SQLiteTrailRepository implements TrailRepository {
         try {
             if (cursor.moveToFirst()) {
                 do {
-                    String id = String.valueOf(cursor.getInt(cursor.getColumnIndexOrThrow("trailId")));
+                    String id = String.valueOf(cursor.getString(cursor.getColumnIndexOrThrow("trailId")));
                     String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
                     String begStr = cursor.getString(cursor.getColumnIndexOrThrow("beginning"));
                     String endStr = cursor.getString(cursor.getColumnIndexOrThrow("ending"));
                     double cal = cursor.getDouble(cursor.getColumnIndexOrThrow("caloric_expenditure"));
                     double avg = cursor.getDouble(cursor.getColumnIndexOrThrow("average_speed"));
                     double max = cursor.getDouble(cursor.getColumnIndexOrThrow("maximum_speed"));
+                    double dist = cursor.getDouble(cursor.getColumnIndexOrThrow("distance"));
+                    String dur = cursor.getString(cursor.getColumnIndexOrThrow("duration"));
 
                     list.add(new TrailEntity(
                             id,
@@ -79,7 +61,9 @@ public class SQLiteTrailRepository implements TrailRepository {
                             endStr != null ? LocalDateTime.parse(endStr) : null,
                             cal,
                             avg,
-                            max
+                            max,
+                            dist,
+                            dur
                     ));
                 } while (cursor.moveToNext());
             }
@@ -141,6 +125,8 @@ public class SQLiteTrailRepository implements TrailRepository {
         values.put("caloric_expenditure", trail.caloricExpenditure());
         values.put("average_speed", trail.averageSpeed());
         values.put("maximum_speed", trail.maximumSpeed());
+        values.put("distance", trail.distance());
+        values.put("duration", trail.duration());
 
         db.update("Trails", values, "trailId = ?", new String[]{trail.trailId()});
         db.close();

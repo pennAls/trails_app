@@ -1,8 +1,16 @@
 <resources>
     <string name="app_name">Trails_APP</string>
     <string name="title_activity_maps">MapsActivity</string>
-
+    <string name="config">Configurações</string>
+    <string name="registrarTrilha">Registrar Trilha</string>
+    <string name="consultarTrilha">Consultar Trilha</string>
+    <string name="creditos">Créditos</string>
     <string name="info_title">Informações da Trilha</string>
     <string name="btn_start">Começar Trilha</string>
     <string name="btn_end">Terminar Trilha</string>
+    <string name="ver">Ver</string>
+    <string name="editar">Editar</string>
+    <string name="excluir">Excluir</string>
+    <string name="share">Compartilhar</string>
+
 </resources>
