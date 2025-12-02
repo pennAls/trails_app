@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Trails_APP</string>
+    <string name="app_name">Trilha App</string>
     <string name="title_activity_maps">MapsActivity</string>
     <string name="config">Configurações</string>
     <string name="registrarTrilha">Registrar Trilha</string>
@@ -12,5 +12,21 @@
     <string name="editar">Editar</string>
     <string name="excluir">Excluir</string>
     <string name="share">Compartilhar</string>
+    <string name="config_user_title">Configurações de Usuário</string>
+    <string name="hint_weight">Peso (kg)</string>
+    <string name="hint_height">Altura (cm)</string>
+    <string name="hint_birth_date">Data de Nascimento</string>
+    <string name="label_gender">Sexo</string>
+    <string name="gender_male">Masculino</string>
+    <string name="gender_female">Feminino</string>
+    <string name="config_map_title">Configurações do Mapa</string>
+    <string name="label_map_type">Tipo de Visualização</string>
+    <string name="map_type_vector">Vetorial (Padrão)</string>
+    <string name="map_type_satellite">Satélite</string>
+    <string name="label_nav_mode">Modo de Navegação</string>
+    <string name="nav_mode_north_up">North Up</string>
+    <string name="nav_mode_course_up">Course Up</string>
+    <string name="btn_cancel">Cancelar</string>
+    <string name="btn_save">Salvar</string>
 
 </resources>

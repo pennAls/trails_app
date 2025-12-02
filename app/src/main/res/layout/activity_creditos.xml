@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFC5"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="32dp"
+        android:gravity="center_horizontal">
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"
+            android:background="#FF5349"/>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Versão 1.0"
+            android:textSize="16sp"
+            android:layout_marginBottom="32dp"
+            android:background="#FF5349"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#CCCCCC"
+            android:layout_marginVertical="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sobre o Projeto"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"
+            android:background="#FFE149"
+            />
+
+        <TextView
+            android:id="@+id/tvDescricaoTrabalho"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=".A solução foi construída utilizando a linguagem Java e o Android SDK. As funcionalidades essenciais incluem a persistência de dados do usuário e de todas as trilhas (percurso, velocidades, gasto calórico) em um Banco de Dados SQLite. O projeto aborda a criação de atividades para *Configuração* (personalização do usuário e mapa), *Registro em Tempo Real* (monitoramento GPS) e *Consulta/Gestão* das trilhas finalizadas"
+            android:textSize="14sp"
+            android:justificationMode="inter_word"
+            android:paddingHorizontal="8dp"
+            android:layout_marginBottom="32dp"
+            android:background="#FFE149"
+            />
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#CCCCCC"
+            android:layout_marginVertical="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Desenvolvido por:"
+            android:textSize="18sp"
+            android:textStyle="italic"
+            android:layout_marginBottom="12dp"
+            android:background="#FFE149"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="André Luís Souza Trindade Rocha - 200031957"
+            android:textSize="16sp"
+            android:background="#ADD8E6"
+            android:radius="20dp"
+
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lucas Pena de Araújo dos Santos - 200032368"
+            android:textSize="16sp"
+            android:background="#ADD8E6"/>
+
+    </LinearLayout>
+</ScrollView>
