@@ -26,7 +26,8 @@ public class MainActivity extends AppCompatActivity {
         binding.btnConfig.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(MainActivity.this, ConfiguracaoActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -47,7 +48,8 @@ public class MainActivity extends AppCompatActivity {
         binding.btnCreditos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(MainActivity.this, CreditosActivity.class);
+                startActivity(intent);
             }
         });
     }
