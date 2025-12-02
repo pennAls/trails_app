@@ -88,7 +88,6 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:textStyle="bold"
                         android:textSize="14sp"
                         tools:text="Tempo: 45 min" />
                 </LinearLayout>
@@ -132,11 +131,13 @@
 
             </LinearLayout>
 
-            <View
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/mapViewItem"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="200dp"
                 android:layout_marginTop="12dp"
-                android:background="#EEE" />
+                app:liteMode="true"
+                android:visibility="visible"/>
 
         </LinearLayout>
 

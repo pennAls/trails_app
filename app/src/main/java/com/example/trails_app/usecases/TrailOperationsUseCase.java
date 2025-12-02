@@ -109,5 +109,9 @@ public class TrailOperationsUseCase {
     public void updateTrail(TrailEntity trilhaAtualizada) {
         trailRepository.updateTrail(trilhaAtualizada);
     }
+    public List<PositionEntity> findPositionsByTrailId(String trailId) {
+        return trailRepository.findPositionsByTrailId(trailId);
+    }
+
 
 }
