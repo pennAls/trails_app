@@ -14,12 +14,11 @@ import com.example.trails_app.databinding.ActivityConsultTrailsBinding;
 import com.example.trails_app.databinding.ItemTrailBinding;
 import com.example.trails_app.domain.entities.PositionEntity;
 import com.example.trails_app.domain.entities.TrailEntity;
-import com.example.trails_app.repository.PositionRepository;
-import com.example.trails_app.repository.SQLitePositionRepository;
 import com.example.trails_app.repository.SQLiteTrailRepository;
 import com.example.trails_app.repository.TrailRepository;
 import com.example.trails_app.usecases.TrailOperationsUseCase;
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -34,6 +33,7 @@ import java.util.Locale;
 public class ConsultTrailsActivity extends AppCompatActivity {
     private ActivityConsultTrailsBinding binding;
     private TrailOperationsUseCase trailOperationsUseCase;
+    private TrailRepository trailRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,7 @@ public class ConsultTrailsActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         AppDatabaseHelper dbHelper = new AppDatabaseHelper(this);
-        TrailRepository trailRepository = new SQLiteTrailRepository(dbHelper);
+        trailRepository = new SQLiteTrailRepository(dbHelper);
         trailOperationsUseCase = new TrailOperationsUseCase(trailRepository);
 
         List<TrailEntity> trails = trailOperationsUseCase.getTrails();
@@ -62,32 +62,48 @@ public class ConsultTrailsActivity extends AppCompatActivity {
             itemBinding.itemAverageSpeed.setText(String.format(Locale.getDefault(), "Vel. Média: %.1f km/h", trail.averageSpeed()));
             itemBinding.itemMaxSpeed.setText(String.format(Locale.getDefault(), "Vel. Máx: %.1f km/h", trail.maximumSpeed()));
             itemBinding.itemTrailCalories.setText(String.format(Locale.getDefault(), "Calorias: %.0f kcal", trail.caloricExpenditure()));
-            itemBinding.itemTrailDistance.setText(String.format(Locale.getDefault(), "Distância: %.2f km/h", trail.distance()));
+            itemBinding.itemTrailDistance.setText(String.format(Locale.getDefault(), "Distância: %.2f km", trail.distance()));
             itemBinding.itemTrailDuration.setText("Tempo: " + trail.duration());
 
             itemBinding.mapViewItem.onCreate(null);
             itemBinding.mapViewItem.getMapAsync(googleMap -> {
                 googleMap.getUiSettings().setMapToolbarEnabled(false);
+                googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+                googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-                List<PositionEntity> positions = trailOperationsUseCase.findPositionsByTrailId(trail.trailId());
+                List<PositionEntity> positions = trailRepository.findPositionsByTrailId(trail.trailId());
 
                 if (positions != null && !positions.isEmpty()) {
                     List<LatLng> points = new ArrayList<>();
+                    LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                    boolean hasValidPoints = false;
+
                     for (PositionEntity p : positions) {
-                        points.add(new LatLng(p.getLatitude(), p.getLongitude()));
+                        if (Math.abs(p.getLatitude()) > 0.1 && Math.abs(p.getLongitude()) > 0.1) {
+                            LatLng point = new LatLng(p.getLatitude(), p.getLongitude());
+                            points.add(point);
+                            builder.include(point);
+                            hasValidPoints = true;
+                        }
                     }
+                    if (hasValidPoints) {
+                        PolylineOptions line = new PolylineOptions()
+                                .addAll(points)
+                                .width(12f)
+                                .color(Color.RED)
+                                .geodesic(true);
+                        googleMap.addPolyline(line);
 
-                    PolylineOptions line = new PolylineOptions()
-                            .addAll(points)
-                            .width(8f)
-                            .color(Color.RED)
-                            .geodesic(true);
-
-                    googleMap.addPolyline(line);
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(points.get(0), 20f));
+                        itemBinding.mapViewItem.post(() -> {
+                            if (points.size() > 0) {
+                                LatLngBounds bounds = builder.build();
+                                LatLng centroDaTrilha = bounds.getCenter();
+                                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(centroDaTrilha, 16f));
+                            }
+                        });
+                    }
                 }
             });
-
 
             itemBinding.btnItemShare.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -147,7 +163,7 @@ public class ConsultTrailsActivity extends AppCompatActivity {
     }
 
     private void shareTrailData(TrailEntity trail) {
-        List<PositionEntity> positions = trailOperationsUseCase.findPositionsByTrailId(trail.trailId());
+        List<PositionEntity> positions = trailRepository.findPositionsByTrailId(trail.trailId());
         StringBuilder csvBuilder = new StringBuilder();
         csvBuilder.append("TRILHA:,").append(trail.name()).append("\n");
         csvBuilder.append("Data:,").append(trail.beginning()).append("\n");

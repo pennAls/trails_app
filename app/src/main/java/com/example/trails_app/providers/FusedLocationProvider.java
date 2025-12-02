@@ -45,7 +45,7 @@ public class FusedLocationProvider implements LocationProvider {
     public void startLocationUpdate(OnLocationReceivedListener listener) {
         this.listener = listener;
         if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            long timeInterval = 10 * 1000;
+            long timeInterval = 5 * 1000;
             locationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, timeInterval).build();
 
             locationCallback = new LocationCallback() {
