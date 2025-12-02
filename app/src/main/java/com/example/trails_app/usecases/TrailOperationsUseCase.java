@@ -40,7 +40,7 @@ public class TrailOperationsUseCase {
         return uuid;
     }
 
-    public TrailEntity finishTrail(String trailId) {
+    public TrailEntity finishTrail(String trailId, double realWeight) {
         List<PositionEntity> positions = trailRepository.findPositionsByTrailId(trailId);
 
         if (positions == null || positions.isEmpty()) {
@@ -83,7 +83,8 @@ public class TrailOperationsUseCase {
 
         double averageSpeedKmh = (totalHours > 0) ? (totalDistanceKm / totalHours) : 0.0;
         double maxSpeedKmh = maxSpeed * 3.6;
-        double calories = totalDistanceKm * 70.0 * 1.036;
+
+        double calories = totalDistanceKm * realWeight * 1.036;
 
         TrailEntity finishedTrail = new TrailEntity(
                 trailId,

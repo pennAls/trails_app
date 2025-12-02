@@ -98,7 +98,7 @@ public class ConsultTrailsActivity extends AppCompatActivity {
                             if (points.size() > 0) {
                                 LatLngBounds bounds = builder.build();
                                 LatLng centroDaTrilha = bounds.getCenter();
-                                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(centroDaTrilha, 16f));
+                                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(centroDaTrilha, 12f));
                             }
                         });
                     }

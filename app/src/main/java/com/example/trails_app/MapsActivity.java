@@ -43,6 +43,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private boolean isActive = false;
     private int mapTypePref = 1;
     private int navModePref = 1;
+    private String realWeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +99,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View v) {
                 if (isActive) {
                     locationProvider.stopLocationUpdate();
-                    trailOperationsUseCase.finishTrail(currentTrailId);
+                    double weight = Double.parseDouble(realWeight.replace(",", "."));
+                    trailOperationsUseCase.finishTrail(currentTrailId, weight);
 
                     isActive = false;
                     currentTrailId = null;
@@ -138,6 +140,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SharedPreferences prefs = getSharedPreferences("UserConfigs", Context.MODE_PRIVATE);
         mapTypePref = prefs.getInt("mapType", 1);
         navModePref = prefs.getInt("navMode", 1);
+        realWeight = prefs.getString("weight", null);
 
         if (mMap != null) {
             if (mapTypePref == 2) {
