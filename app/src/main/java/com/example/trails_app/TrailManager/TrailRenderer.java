@@ -1,7 +1,9 @@
 package com.example.trails_app.TrailManager;
+
 import android.graphics.Color;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -16,7 +18,8 @@ public class TrailRenderer {
     public TrailRenderer(GoogleMap googleMap) {
         this.mMap = googleMap;
     }
-    public void updatePosition(LatLng position, float accuracy) {
+
+    public void updatePosition(LatLng position, float accuracy, float bearing, int navMode) {
         if (mMap == null) return;
 
         if (userMarker == null) {
@@ -40,7 +43,23 @@ public class TrailRenderer {
             accuracyCircle.setCenter(position);
             accuracyCircle.setRadius(accuracy);
         }
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 15f));
+
+        float cameraTilt = 0f;
+        float cameraBearing = 0f;
+
+        if (navMode == 2) {
+            cameraTilt = 45f;
+            cameraBearing = bearing;
+        }
+
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(position)
+                .zoom(18f)
+                .bearing(cameraBearing)
+                .tilt(cameraTilt)
+                .build();
+
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
     public void reset() {
@@ -51,6 +70,16 @@ public class TrailRenderer {
         if (accuracyCircle != null) {
             accuracyCircle.remove();
             accuracyCircle = null;
+        }
+
+        if (mMap != null) {
+            CameraPosition resetCam = new CameraPosition.Builder()
+                    .target(mMap.getCameraPosition().target)
+                    .zoom(15f)
+                    .bearing(0f)
+                    .tilt(0f)
+                    .build();
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(resetCam));
         }
     }
 }

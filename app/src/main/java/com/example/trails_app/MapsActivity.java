@@ -3,6 +3,8 @@ package com.example.trails_app;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -15,6 +17,7 @@ import com.example.trails_app.providers.LocationProvider;
 import com.example.trails_app.repository.SQLitePositionRepository;
 import com.example.trails_app.repository.SQLiteTrailRepository;
 import com.example.trails_app.repository.TrailRepository;
+import com.example.trails_app.usecases.NavigationUseCase;
 import com.example.trails_app.usecases.PositionOperationsUseCase;
 import com.example.trails_app.usecases.TrailOperationsUseCase;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -31,12 +34,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private TrailOperationsUseCase trailOperationsUseCase;
     private PositionOperationsUseCase positionOperationsUseCase;
+    private NavigationUseCase navigationUseCase;
 
     private TrailRenderer trailRenderer;
     private TrailStatsManager trailStatsManager;
 
     private String currentTrailId;
     private boolean isActive = false;
+    private int mapTypePref = 1;
+    private int navModePref = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +60,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         trailOperationsUseCase = new TrailOperationsUseCase(trailRepository);
         positionOperationsUseCase = new PositionOperationsUseCase(positionRepository);
+        navigationUseCase = new NavigationUseCase();
 
         locationProvider = new FusedLocationProvider(this);
         trailStatsManager = new TrailStatsManager(binding);
@@ -63,8 +70,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View v) {
                 if (!isActive) {
                     currentTrailId = trailOperationsUseCase.startTrail();
+
                     if (trailRenderer != null) trailRenderer.reset();
                     trailStatsManager.start();
+                    navigationUseCase.reset();
+
                     isActive = true;
 
                     locationProvider.startLocationUpdate(position -> {
@@ -72,8 +82,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         trailStatsManager.update(position);
 
                         if (trailRenderer != null) {
-                            LatLng newPosition = new LatLng(position.getLatitude(), position.getLongitude());
-                            trailRenderer.updatePosition(newPosition, position.getAccuracy());
+                            LatLng pos = new LatLng(position.getLatitude(), position.getLongitude());
+                            float bearing = navigationUseCase.calculateBearing(position, navModePref);
+                            trailRenderer.updatePosition(pos, position.getAccuracy(), bearing, navModePref);
                         }
                     });
                 } else {
@@ -88,10 +99,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (isActive) {
                     locationProvider.stopLocationUpdate();
                     trailOperationsUseCase.finishTrail(currentTrailId);
+
                     isActive = false;
                     currentTrailId = null;
+
                     if (trailRenderer != null) trailRenderer.reset();
                     trailStatsManager.reset();
+                    navigationUseCase.reset();
+
                     Toast.makeText(MapsActivity.this, "Trilha Finalizada", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -99,10 +114,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        loadPreferences();
+    }
+
+    @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         trailRenderer = new TrailRenderer(mMap);
-
+        loadPreferences();
         LatLng startPos = new LatLng(-12.94825, -38.41334);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startPos, 15));
     }
@@ -111,5 +132,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         locationProvider.handlePermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    private void loadPreferences() {
+        SharedPreferences prefs = getSharedPreferences("UserConfigs", Context.MODE_PRIVATE);
+        mapTypePref = prefs.getInt("mapType", 1);
+        navModePref = prefs.getInt("navMode", 1);
+
+        if (mMap != null) {
+            if (mapTypePref == 2) {
+                mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+            } else {
+                mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            }
+        }
     }
 }

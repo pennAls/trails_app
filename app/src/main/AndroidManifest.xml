@@ -15,6 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Trails_APP">
         <activity
+            android:name=".ConfigActivity"
+            android:exported="false" />
+        <activity
             android:name=".ConsultTrailsActivity"
             android:exported="false" />
         <!--
